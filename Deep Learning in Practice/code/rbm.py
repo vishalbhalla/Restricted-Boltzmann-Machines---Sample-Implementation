@@ -92,6 +92,34 @@ for i_epoch in range(n_epochs):
     for i_minibatch in range(n_minibatches):
         batch = data_sets.train.next_batch(batch_size, no_labels=True)
 
+        #
+        # Start Gibbs Step
+        #
+        pos_hid_inp = np.dot(batch, weights) + hid_biases
+        pos_hid_probs = sigmoid(pos_hid_inp)
+
+        # Hidden states will have binary values, that is 0 or 1.
+        pos_hid_states = pos_hid_probs > uniform(size=pos_hid_probs.shape)
+
+        # Calculate terms for Step 7 to 10.
+        pos_prods = np.dot(batch.T, pos_hid_probs)
+
+        pos_hid_act = np.sum(pos_hid_probs, axis=0)
+        pos_vis_act = np.sum(batch, axis=0)
+
+
+        # Sample Push the data back down. Lets calculate the value that comes back to the visible units.
+        neg_vis_inp = np.dot(pos_hid_states, weights.T) + vis_biases
+        neg_data = sigmoid(neg_vis_inp)
+
+        # No need to sample here.
+        neg_hid_inp = np.dot(neg_data, weights) + hid_biases
+        neg_hid_probs = sigmoid(neg_hid_inp)
+
+        neg_prods = np.dot(neg_data.T, neg_hid_probs)
+
+        neg_hid_act = np.sum(neg_hid_probs, axis=0)
+        neg_vis_act = np.sum(neg_data, axis=0)
 
 
     #
