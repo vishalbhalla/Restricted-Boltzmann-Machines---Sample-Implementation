@@ -122,6 +122,22 @@ for i_epoch in range(n_epochs):
         neg_vis_act = np.sum(neg_data, axis=0)
 
 
+        #
+        # Update Parameters
+        #
+
+        weights_delta = (pos_prods - neg_prods)/batch_size
+        vis_biases_delta = (pos_vis_act - neg_vis_act)/batch_size
+        hid_biases_delta = (pos_hid_act - neg_hid_act)/batch_size
+
+        # Increase the training process by adding a momentum by using weights in the previous iteration.
+        weights += lr * weights_delta - decay *weights + momentum * weights_inc
+
+        # Decay not required for the biases.
+        vis_biases += lr * vis_biases_delta + momentum * vis_biases_inc
+        hid_biases += lr * hid_biases_delta  + momentum * hid_biases_inc
+
+
     #
     # Error Reporting
     #
