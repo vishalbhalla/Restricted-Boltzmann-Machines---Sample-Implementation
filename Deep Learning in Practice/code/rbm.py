@@ -138,6 +138,22 @@ for i_epoch in range(n_epochs):
         hid_biases += lr * hid_biases_delta  + momentum * hid_biases_inc
 
 
+        #
+        #  Store Deltas
+        #
+
+        # Save deltas for momentum
+        weights_inc = weights_delta
+        vis_biases_inc = vis_biases_delta
+        hid_biases_inc = hid_biases_delta
+
+        #
+        # Compute training error for batch
+        #
+
+        train_err += np.sum((batch - neg_data) ** 2)
+
+
     #
     # Error Reporting
     #
